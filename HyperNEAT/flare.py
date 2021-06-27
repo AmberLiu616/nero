@@ -10,11 +10,11 @@ sub_sh_dims = [1,25]
 sub_o_dims = 1
 
 # Evolutionary parameters
-goal_fitness=0.98
+goal_fitness=9.0
 pop_key = 0
 pop_size = 150
-pop_elitism = 3
-num_generations = 100
+pop_elitism = 25
+num_generations = 7
 
 
 def get_data(path=None):
@@ -29,7 +29,9 @@ def get_data(path=None):
         else:
             cur_line = list(map(lambda x: float(x), cur_line.strip().split()))
             data.append(tuple(cur_line[: 24]))
-            label.append(cur_line[-3])
+            label.append(cur_line[-1]*2)
+    print('all label:', label)
+    print('all label:', set(label), min(label), max(label))
     return data, label
 
 
@@ -47,7 +49,7 @@ def xor(genomes):
 		for inputs, expected in zip(xor_inputs, expected_outputs):
 			inputs = inputs + (1.0,)
 			actual_output = substrate.activate(inputs)[0]
-			sum_square_error += ((actual_output - expected)**2.0)/4.0
+			sum_square_error += ((actual_output - expected)**2.0)/len(xor_inputs)
 		genome.fitness = 1.0 - sum_square_error
 
 # Inititalize population
@@ -70,5 +72,5 @@ draw_net(substrate, filename="reports/champion_images/xor_substrate")
 
 # Run winning genome on the task again
 print("\nChampion Genome: {} with Fitness {}\n".format(winner_genome.key, 
-	  											winner_genome.fitness))
+	  						winner_genome.fitness))
 xor([(winner_genome.key,winner_genome)])
